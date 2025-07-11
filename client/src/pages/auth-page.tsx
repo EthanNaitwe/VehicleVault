@@ -109,6 +109,19 @@ export default function AuthPage() {
     registerMutation.mutate(data);
   };
 
+  const handleToggle = () => {
+    setIsLogin((prev) => {
+      if (prev) {
+        // Switching to register
+        registerForm.reset();
+      } else {
+        // Switching to login
+        loginForm.reset();
+      }
+      return !prev;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -308,7 +321,7 @@ export default function AuthPage() {
                 
                 <div className="mt-6 text-center">
                   <button
-                    onClick={() => setIsLogin(!isLogin)}
+                    onClick={handleToggle}
                     className="text-primary hover:text-primary/80 text-sm"
                   >
                     {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
