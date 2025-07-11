@@ -89,7 +89,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
         <div className="flex justify-between items-center">
           <div>
             <p className="text-2xl font-bold text-foreground">
-              ${vehicle.status === "sold" 
+              UGX {vehicle.status === "sold" 
                 ? (vehicle.soldPrice ? parseFloat(vehicle.soldPrice).toLocaleString() : 'N/A')
                 : (vehicle.askingPrice ? parseFloat(vehicle.askingPrice).toLocaleString() : 'N/A')
               }
