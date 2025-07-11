@@ -56,6 +56,7 @@ export default function AuthPage() {
       email_2: "pass",
       password: "",
     },
+    mode: "onChange",
   });
 
   // Debug: Log form state
