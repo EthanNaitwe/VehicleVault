@@ -83,6 +83,8 @@ export default function AuthPage() {
   const registerMutation = useMutation({
     mutationFn: async (data: z.infer<typeof registerSchema>) => {
       const response = await apiRequest("POST", "/api/register", data);
+      console.log("Register response:", response);
+      console.log("Register data:", data);
       return response.json();
     },
     onSuccess: () => {
