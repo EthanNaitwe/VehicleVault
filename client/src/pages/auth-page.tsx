@@ -34,9 +34,11 @@ export default function AuthPage() {
 
   // Redirect if already authenticated
   if (isAuthenticated) {
+    console.log("isAuthenticated: if", isAuthenticated);
     navigate("/");
     return null;
   } else {
+    console.log("isAuthenticated: else", isAuthenticated);
     navigate("/auth");
     return null;
   }
