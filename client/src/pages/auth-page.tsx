@@ -39,7 +39,7 @@ export default function AuthPage() {
     return null;
   } else {
     console.log("isAuthenticated: else", isAuthenticated);
-    navigate("/auth");
+    navigate("/");
     return null;
   }
 
