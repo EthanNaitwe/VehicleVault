@@ -141,7 +141,12 @@ export default function AuthPage() {
                           <FormItem>
                             <FormLabel>Email</FormLabel>
                             <FormControl>
-                              <Input placeholder="Enter your email" {...field} />
+                              <Input 
+                                type="email"
+                                placeholder="Enter your email" 
+                                autoComplete="email"
+                                {...field} 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -155,7 +160,12 @@ export default function AuthPage() {
                           <FormItem>
                             <FormLabel>Password</FormLabel>
                             <FormControl>
-                              <Input type="password" placeholder="Enter your password" {...field} />
+                              <Input 
+                                type="password" 
+                                placeholder="Enter your password" 
+                                autoComplete="current-password"
+                                {...field} 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -182,7 +192,11 @@ export default function AuthPage() {
                             <FormItem>
                               <FormLabel>First Name</FormLabel>
                               <FormControl>
-                                <Input placeholder="John" {...field} />
+                                <Input 
+                                  placeholder="John" 
+                                  autoComplete="given-name"
+                                  {...field} 
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -196,7 +210,11 @@ export default function AuthPage() {
                             <FormItem>
                               <FormLabel>Last Name</FormLabel>
                               <FormControl>
-                                <Input placeholder="Doe" {...field} />
+                                <Input 
+                                  placeholder="Doe" 
+                                  autoComplete="family-name"
+                                  {...field} 
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -211,7 +229,12 @@ export default function AuthPage() {
                           <FormItem>
                             <FormLabel>Email</FormLabel>
                             <FormControl>
-                              <Input placeholder="john@example.com" {...field} />
+                              <Input 
+                                type="email"
+                                placeholder="john@example.com" 
+                                autoComplete="email"
+                                {...field} 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -225,7 +248,12 @@ export default function AuthPage() {
                           <FormItem>
                             <FormLabel>Password</FormLabel>
                             <FormControl>
-                              <Input type="password" placeholder="At least 6 characters" {...field} />
+                              <Input 
+                                type="password" 
+                                placeholder="At least 6 characters" 
+                                autoComplete="new-password"
+                                {...field} 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
