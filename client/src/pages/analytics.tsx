@@ -41,7 +41,7 @@ export default function Analytics() {
                 <DollarSign className="text-green-600" />
               </div>
               <p className="text-2xl font-bold text-foreground mb-2">
-                ${statsLoading ? "..." : stats?.totalRevenue?.toLocaleString() || 0}
+                UGX {statsLoading ? "..." : stats?.totalRevenue?.toLocaleString() || 0}
               </p>
               <p className="text-sm text-green-600">Current total</p>
             </CardContent>
@@ -54,7 +54,7 @@ export default function Analytics() {
                 <TrendingUp className="text-green-600" />
               </div>
               <p className="text-2xl font-bold text-foreground mb-2">
-                ${statsLoading ? "..." : Math.round(stats?.averageProfit || 0).toLocaleString()}
+                UGX {statsLoading ? "..." : Math.round(stats?.averageProfit || 0).toLocaleString()}
               </p>
               <p className="text-sm text-green-600">Per vehicle</p>
             </CardContent>
@@ -129,10 +129,10 @@ export default function Analytics() {
                       </div>
                       <div className="text-right">
                         <p className="font-semibold text-foreground">
-                          ${vehicle.soldPrice ? parseFloat(vehicle.soldPrice).toLocaleString() : 'N/A'}
+                          UGX {vehicle.soldPrice ? parseFloat(vehicle.soldPrice).toLocaleString() : 'N/A'}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          Profit: ${vehicle.profit.toLocaleString()}
+                          Profit: UGX {vehicle.profit.toLocaleString()}
                         </p>
                       </div>
                     </div>
