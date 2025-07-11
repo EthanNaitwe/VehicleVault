@@ -291,7 +291,7 @@ export default function AuthPage() {
                       
                       <FormField
                         control={registerForm.control}
-                        name="password"
+                        name="email"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Password</FormLabel>
