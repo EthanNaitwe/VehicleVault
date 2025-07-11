@@ -249,7 +249,7 @@ export default function AuthPage() {
                               <Input 
                                 type="email"
                                 placeholder="Enter your email" 
-                                // autoComplete="email"
+                                autoComplete="email"
                                 {...field} 
                               />
                             </FormControl>
@@ -297,10 +297,10 @@ export default function AuthPage() {
                           <FormItem>
                             <FormLabel>Password</FormLabel>
                             <FormControl>
-                              <Input 
-                                type="password" 
+                              <Input
+                                type="email" 
                                 placeholder="At least 6 characters" 
-                                autoComplete="new-password"
+                                autoComplete="email"
                                 {...field} 
                               />
                             </FormControl>
