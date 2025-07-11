@@ -87,7 +87,7 @@ export default function Home() {
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
                   <p className="text-2xl font-bold text-foreground">
-                    {statsLoading ? "..." : `$${stats?.totalRevenue?.toLocaleString() || 0}`}
+                    {statsLoading ? "..." : `UGX ${stats?.totalRevenue?.toLocaleString() || 0}`}
                   </p>
                 </div>
                 <div className="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center">
@@ -141,7 +141,7 @@ export default function Home() {
                         </div>
                         <div className="text-right">
                           <p className="font-semibold text-foreground">
-                            ${vehicle.askingPrice ? parseFloat(vehicle.askingPrice).toLocaleString() : 'N/A'}
+                            UGX {vehicle.askingPrice ? parseFloat(vehicle.askingPrice).toLocaleString() : 'N/A'}
                           </p>
                           <p className="text-sm text-muted-foreground">
                             {new Date(vehicle.createdAt).toLocaleDateString()}

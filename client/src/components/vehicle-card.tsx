@@ -95,7 +95,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
               }
             </p>
             <p className={`text-sm ${profit > 0 ? 'text-green-600' : 'text-muted-foreground'}`}>
-              {profit > 0 ? `Profit: $${profit.toLocaleString()}` : 'No profit data'}
+              {profit > 0 ? `Profit: UGX ${profit.toLocaleString()}` : 'No profit data'}
             </p>
           </div>
           <Button className="bg-primary hover:bg-primary/90">

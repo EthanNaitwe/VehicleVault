@@ -83,7 +83,7 @@ export default function Dashboard() {
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Average Profit</p>
                   <p className="text-2xl font-bold text-foreground">
-                    {statsLoading ? "..." : `$${stats?.averageProfit?.toLocaleString() || 0}`}
+                    {statsLoading ? "..." : `UGX ${stats?.averageProfit?.toLocaleString() || 0}`}
                   </p>
                 </div>
                 <div className="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center">
@@ -129,11 +129,11 @@ export default function Dashboard() {
                     </div>
                     <div className="text-right">
                       <p className="font-semibold text-foreground">
-                        ${vehicle.askingPrice ? parseFloat(vehicle.askingPrice).toLocaleString() : 'N/A'}
+                        UGX {vehicle.askingPrice ? parseFloat(vehicle.askingPrice).toLocaleString() : 'N/A'}
                       </p>
                       <p className="text-sm text-muted-foreground">
                         {vehicle.soldPrice && vehicle.purchasePrice ? 
-                          `Profit: $${(parseFloat(vehicle.soldPrice) - parseFloat(vehicle.purchasePrice)).toLocaleString()}` :
+                          `Profit: UGX ${(parseFloat(vehicle.soldPrice) - parseFloat(vehicle.purchasePrice)).toLocaleString()}` :
                           `Added ${new Date(vehicle.createdAt).toLocaleDateString()}`
                         }
                       </p>
