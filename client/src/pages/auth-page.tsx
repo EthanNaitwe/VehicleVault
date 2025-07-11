@@ -23,7 +23,6 @@ const registerSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Invalid email address"),
-  email_2: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
@@ -53,7 +52,6 @@ export default function AuthPage() {
       firstName: "",
       lastName: "",
       email: "",
-      email_2: "pass",
       password: "",
     },
     mode: "onChange",
@@ -243,7 +241,7 @@ export default function AuthPage() {
 
                       <FormField
                         control={registerForm.control}
-                        name="email_2"
+                        name="email"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Email 1</FormLabel>
