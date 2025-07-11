@@ -40,65 +40,92 @@ export interface IStorage {
   }>;
 }
 
-export class DatabaseStorage implements IStorage {
+export class MemStorage implements IStorage {
+  private users: User[] = [];
+  private vehicles: Vehicle[] = [];
+  private expenses: VehicleExpense[] = [];
+  private nextUserId = 1;
+  private nextVehicleId = 1;
+  private nextExpenseId = 1;
+
   // User operations
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+    return this.users.find(user => user.id === id);
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.email, email));
-    return user;
+    return this.users.find(user => user.email === email);
   }
 
   async createUser(userData: InsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(userData)
-      .returning();
+    const user: User = {
+      id: this.nextUserId++,
+      email: userData.email,
+      firstName: userData.firstName ?? null,
+      lastName: userData.lastName ?? null,
+      password: userData.password,
+      profileImageUrl: userData.profileImageUrl ?? null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.users.push(user);
     return user;
   }
 
   // Vehicle operations
   async getVehicles(userId: number): Promise<Vehicle[]> {
-    return await db
-      .select()
-      .from(vehicles)
-      .where(eq(vehicles.userId, userId))
-      .orderBy(desc(vehicles.createdAt));
+    return this.vehicles
+      .filter(vehicle => vehicle.userId === userId)
+      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
   }
 
   async getVehicle(id: number, userId: number): Promise<Vehicle | undefined> {
-    const [vehicle] = await db
-      .select()
-      .from(vehicles)
-      .where(and(eq(vehicles.id, id), eq(vehicles.userId, userId)));
+    return this.vehicles.find(vehicle => vehicle.id === id && vehicle.userId === userId);
+  }
+
+  async createVehicle(vehicleData: InsertVehicle, userId: number): Promise<Vehicle> {
+    const vehicle: Vehicle = {
+      id: this.nextVehicleId++,
+      make: vehicleData.make,
+      model: vehicleData.model,
+      year: vehicleData.year,
+      vin: vehicleData.vin ?? null,
+      mileage: vehicleData.mileage ?? null,
+      fuelType: vehicleData.fuelType ?? null,
+      transmission: vehicleData.transmission ?? null,
+      purchasePrice: vehicleData.purchasePrice ?? null,
+      askingPrice: vehicleData.askingPrice ?? null,
+      soldPrice: vehicleData.soldPrice ?? null,
+      status: vehicleData.status ?? "available",
+      description: vehicleData.description ?? null,
+      imageUrl: vehicleData.imageUrl ?? null,
+      userId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      soldAt: null,
+    };
+    this.vehicles.push(vehicle);
     return vehicle;
   }
 
-  async createVehicle(vehicle: InsertVehicle, userId: number): Promise<Vehicle> {
-    const [newVehicle] = await db
-      .insert(vehicles)
-      .values({ ...vehicle, userId })
-      .returning();
-    return newVehicle;
-  }
-
-  async updateVehicle(id: number, vehicle: Partial<InsertVehicle>, userId: number): Promise<Vehicle | undefined> {
-    const [updatedVehicle] = await db
-      .update(vehicles)
-      .set({ ...vehicle, updatedAt: new Date() })
-      .where(and(eq(vehicles.id, id), eq(vehicles.userId, userId)))
-      .returning();
-    return updatedVehicle;
+  async updateVehicle(id: number, vehicleData: Partial<InsertVehicle>, userId: number): Promise<Vehicle | undefined> {
+    const index = this.vehicles.findIndex(vehicle => vehicle.id === id && vehicle.userId === userId);
+    if (index === -1) return undefined;
+    
+    this.vehicles[index] = {
+      ...this.vehicles[index],
+      ...vehicleData,
+      updatedAt: new Date(),
+    };
+    return this.vehicles[index];
   }
 
   async deleteVehicle(id: number, userId: number): Promise<boolean> {
-    const result = await db
-      .delete(vehicles)
-      .where(and(eq(vehicles.id, id), eq(vehicles.userId, userId)));
-    return (result.rowCount ?? 0) > 0;
+    const index = this.vehicles.findIndex(vehicle => vehicle.id === id && vehicle.userId === userId);
+    if (index === -1) return false;
+    
+    this.vehicles.splice(index, 1);
+    return true;
   }
 
   // Vehicle expense operations
@@ -108,26 +135,30 @@ export class DatabaseStorage implements IStorage {
     if (!vehicle) {
       return [];
     }
-
-    return await db
-      .select()
-      .from(vehicleExpenses)
-      .where(eq(vehicleExpenses.vehicleId, vehicleId))
-      .orderBy(desc(vehicleExpenses.date));
+    
+    return this.expenses
+      .filter(expense => expense.vehicleId === vehicleId)
+      .sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
   }
 
-  async addVehicleExpense(expense: InsertVehicleExpense, userId: number): Promise<VehicleExpense> {
+  async addVehicleExpense(expenseData: InsertVehicleExpense, userId: number): Promise<VehicleExpense> {
     // Verify the vehicle belongs to the user
-    const vehicle = await this.getVehicle(expense.vehicleId, userId);
+    const vehicle = await this.getVehicle(expenseData.vehicleId, userId);
     if (!vehicle) {
       throw new Error("Vehicle not found");
     }
-
-    const [newExpense] = await db
-      .insert(vehicleExpenses)
-      .values(expense)
-      .returning();
-    return newExpense;
+    
+    const expense: VehicleExpense = {
+      id: this.nextExpenseId++,
+      vehicleId: expenseData.vehicleId,
+      type: expenseData.type,
+      amount: expenseData.amount,
+      description: expenseData.description ?? null,
+      date: expenseData.date ?? new Date(),
+      createdAt: new Date(),
+    };
+    this.expenses.push(expense);
+    return expense;
   }
 
   // Analytics operations
@@ -138,10 +169,7 @@ export class DatabaseStorage implements IStorage {
     totalRevenue: number;
     averageProfit: number;
   }> {
-    const userVehicles = await db
-      .select()
-      .from(vehicles)
-      .where(eq(vehicles.userId, userId));
+    const userVehicles = this.vehicles.filter(v => v.userId === userId);
 
     const totalVehicles = userVehicles.length;
     const availableVehicles = userVehicles.filter(v => v.status === "available").length;
@@ -149,7 +177,7 @@ export class DatabaseStorage implements IStorage {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const soldThisMonth = userVehicles.filter(v => 
-      v.status === "sold" && v.soldAt && v.soldAt >= startOfMonth
+      v.status === "sold" && v.soldAt && new Date(v.soldAt) >= startOfMonth
     ).length;
 
     const soldVehicles = userVehicles.filter(v => v.status === "sold" && v.soldPrice);
@@ -173,4 +201,4 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new MemStorage();
