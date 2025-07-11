@@ -240,7 +240,7 @@ export default function AuthPage() {
                         />
                       </div>
 
-                      {/* <FormField
+                      <FormField
                         control={registerForm.control}
                         name="email_2"
                         render={({ field }) => (
@@ -257,7 +257,7 @@ export default function AuthPage() {
                             <FormMessage />
                           </FormItem>
                         )}
-                      /> */}
+                      />
                       
                       {/* <FormField
                         control={registerForm.control}
