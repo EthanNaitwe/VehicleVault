@@ -1,19 +1,19 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
-import { insertVehicleSchema, insertVehicleExpenseSchema } from "@shared/schema";
+import { setupAuth, requireAuth } from "./auth";
+import { insertVehicleSchema, insertVehicleExpenseSchema, insertUserSchema, loginUserSchema } from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
-  await setupAuth(app);
+  setupAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  // Auth routes (handled in auth.ts)
+  app.get('/api/auth/user', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       res.json(user);
     } catch (error) {
@@ -23,9 +23,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Vehicle routes
-  app.get("/api/vehicles", isAuthenticated, async (req: any, res) => {
+  app.get("/api/vehicles", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const vehicles = await storage.getVehicles(userId);
       res.json(vehicles);
     } catch (error) {
@@ -34,9 +34,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/vehicles/:id", isAuthenticated, async (req: any, res) => {
+  app.get("/api/vehicles/:id", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const id = parseInt(req.params.id);
       const vehicle = await storage.getVehicle(id, userId);
       
@@ -51,9 +51,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/vehicles", isAuthenticated, async (req: any, res) => {
+  app.post("/api/vehicles", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       const validation = insertVehicleSchema.safeParse(req.body);
       if (!validation.success) {
@@ -71,9 +71,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/vehicles/:id", isAuthenticated, async (req: any, res) => {
+  app.put("/api/vehicles/:id", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const id = parseInt(req.params.id);
       
       const validation = insertVehicleSchema.partial().safeParse(req.body);
@@ -97,9 +97,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/vehicles/:id", isAuthenticated, async (req: any, res) => {
+  app.delete("/api/vehicles/:id", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const id = parseInt(req.params.id);
       
       const success = await storage.deleteVehicle(id, userId);
@@ -116,9 +116,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Vehicle expense routes
-  app.get("/api/vehicles/:id/expenses", isAuthenticated, async (req: any, res) => {
+  app.get("/api/vehicles/:id/expenses", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const vehicleId = parseInt(req.params.id);
       
       const expenses = await storage.getVehicleExpenses(vehicleId, userId);
@@ -129,9 +129,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/vehicles/:id/expenses", isAuthenticated, async (req: any, res) => {
+  app.post("/api/vehicles/:id/expenses", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const vehicleId = parseInt(req.params.id);
       
       const validation = insertVehicleExpenseSchema.safeParse({
@@ -155,9 +155,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Analytics routes
-  app.get("/api/analytics/stats", isAuthenticated, async (req: any, res) => {
+  app.get("/api/analytics/stats", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const stats = await storage.getVehicleStats(userId);
       res.json(stats);
     } catch (error) {

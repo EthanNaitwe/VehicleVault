@@ -3,7 +3,7 @@ import {
   vehicles,
   vehicleExpenses,
   type User,
-  type UpsertUser,
+  type InsertUser,
   type Vehicle,
   type InsertVehicle,
   type VehicleExpense,
@@ -15,23 +15,23 @@ import { eq, desc, and } from "drizzle-orm";
 // Interface for storage operations
 export interface IStorage {
   // User operations
-  // (IMPORTANT) these user operations are mandatory for Replit Auth.
-  getUser(id: string): Promise<User | undefined>;
-  upsertUser(user: UpsertUser): Promise<User>;
+  getUser(id: number): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
   
   // Vehicle operations
-  getVehicles(userId: string): Promise<Vehicle[]>;
-  getVehicle(id: number, userId: string): Promise<Vehicle | undefined>;
-  createVehicle(vehicle: InsertVehicle, userId: string): Promise<Vehicle>;
-  updateVehicle(id: number, vehicle: Partial<InsertVehicle>, userId: string): Promise<Vehicle | undefined>;
-  deleteVehicle(id: number, userId: string): Promise<boolean>;
+  getVehicles(userId: number): Promise<Vehicle[]>;
+  getVehicle(id: number, userId: number): Promise<Vehicle | undefined>;
+  createVehicle(vehicle: InsertVehicle, userId: number): Promise<Vehicle>;
+  updateVehicle(id: number, vehicle: Partial<InsertVehicle>, userId: number): Promise<Vehicle | undefined>;
+  deleteVehicle(id: number, userId: number): Promise<boolean>;
   
   // Vehicle expense operations
-  getVehicleExpenses(vehicleId: number, userId: string): Promise<VehicleExpense[]>;
-  addVehicleExpense(expense: InsertVehicleExpense, userId: string): Promise<VehicleExpense>;
+  getVehicleExpenses(vehicleId: number, userId: number): Promise<VehicleExpense[]>;
+  addVehicleExpense(expense: InsertVehicleExpense, userId: number): Promise<VehicleExpense>;
   
   // Analytics operations
-  getVehicleStats(userId: string): Promise<{
+  getVehicleStats(userId: number): Promise<{
     totalVehicles: number;
     availableVehicles: number;
     soldThisMonth: number;
@@ -42,30 +42,26 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   // User operations
-  // (IMPORTANT) these user operations are mandatory for Replit Auth.
-
-  async getUser(id: string): Promise<User | undefined> {
+  async getUser(id: number): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
 
-  async upsertUser(userData: UpsertUser): Promise<User> {
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async createUser(userData: InsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
       .values(userData)
-      .onConflictDoUpdate({
-        target: users.id,
-        set: {
-          ...userData,
-          updatedAt: new Date(),
-        },
-      })
       .returning();
     return user;
   }
 
   // Vehicle operations
-  async getVehicles(userId: string): Promise<Vehicle[]> {
+  async getVehicles(userId: number): Promise<Vehicle[]> {
     return await db
       .select()
       .from(vehicles)
@@ -73,7 +69,7 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(vehicles.createdAt));
   }
 
-  async getVehicle(id: number, userId: string): Promise<Vehicle | undefined> {
+  async getVehicle(id: number, userId: number): Promise<Vehicle | undefined> {
     const [vehicle] = await db
       .select()
       .from(vehicles)
@@ -81,7 +77,7 @@ export class DatabaseStorage implements IStorage {
     return vehicle;
   }
 
-  async createVehicle(vehicle: InsertVehicle, userId: string): Promise<Vehicle> {
+  async createVehicle(vehicle: InsertVehicle, userId: number): Promise<Vehicle> {
     const [newVehicle] = await db
       .insert(vehicles)
       .values({ ...vehicle, userId })
@@ -89,7 +85,7 @@ export class DatabaseStorage implements IStorage {
     return newVehicle;
   }
 
-  async updateVehicle(id: number, vehicle: Partial<InsertVehicle>, userId: string): Promise<Vehicle | undefined> {
+  async updateVehicle(id: number, vehicle: Partial<InsertVehicle>, userId: number): Promise<Vehicle | undefined> {
     const [updatedVehicle] = await db
       .update(vehicles)
       .set({ ...vehicle, updatedAt: new Date() })
@@ -98,15 +94,15 @@ export class DatabaseStorage implements IStorage {
     return updatedVehicle;
   }
 
-  async deleteVehicle(id: number, userId: string): Promise<boolean> {
+  async deleteVehicle(id: number, userId: number): Promise<boolean> {
     const result = await db
       .delete(vehicles)
       .where(and(eq(vehicles.id, id), eq(vehicles.userId, userId)));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   // Vehicle expense operations
-  async getVehicleExpenses(vehicleId: number, userId: string): Promise<VehicleExpense[]> {
+  async getVehicleExpenses(vehicleId: number, userId: number): Promise<VehicleExpense[]> {
     // First verify the vehicle belongs to the user
     const vehicle = await this.getVehicle(vehicleId, userId);
     if (!vehicle) {
@@ -120,7 +116,7 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(vehicleExpenses.date));
   }
 
-  async addVehicleExpense(expense: InsertVehicleExpense, userId: string): Promise<VehicleExpense> {
+  async addVehicleExpense(expense: InsertVehicleExpense, userId: number): Promise<VehicleExpense> {
     // Verify the vehicle belongs to the user
     const vehicle = await this.getVehicle(expense.vehicleId, userId);
     if (!vehicle) {
@@ -135,7 +131,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Analytics operations
-  async getVehicleStats(userId: string): Promise<{
+  async getVehicleStats(userId: number): Promise<{
     totalVehicles: number;
     availableVehicles: number;
     soldThisMonth: number;

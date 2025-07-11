@@ -26,20 +26,20 @@ export const sessions = pgTable(
 );
 
 // User storage table.
-// (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
 export const users = pgTable("users", {
-  id: varchar("id").primaryKey().notNull(),
-  email: varchar("email").unique(),
-  firstName: varchar("first_name"),
-  lastName: varchar("last_name"),
-  profileImageUrl: varchar("profile_image_url"),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  email: varchar("email", { length: 255 }).unique().notNull(),
+  firstName: varchar("first_name", { length: 100 }),
+  lastName: varchar("last_name", { length: 100 }),
+  password: varchar("password", { length: 255 }).notNull(),
+  profileImageUrl: varchar("profile_image_url", { length: 500 }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Vehicle storage table
 export const vehicles = pgTable("vehicles", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   make: varchar("make", { length: 100 }).notNull(),
   model: varchar("model", { length: 100 }).notNull(),
   year: integer("year").notNull(),
@@ -53,7 +53,7 @@ export const vehicles = pgTable("vehicles", {
   status: varchar("status", { length: 20 }).default("available"), // available, sold, pending
   description: text("description"),
   imageUrl: varchar("image_url", { length: 500 }),
-  userId: varchar("user_id").notNull(),
+  userId: integer("user_id").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   soldAt: timestamp("sold_at"),
@@ -61,7 +61,7 @@ export const vehicles = pgTable("vehicles", {
 
 // Vehicle expenses table
 export const vehicleExpenses = pgTable("vehicle_expenses", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   vehicleId: integer("vehicle_id").notNull(),
   type: varchar("type", { length: 100 }).notNull(), // repair, maintenance, inspection, etc.
   description: text("description"),
@@ -70,8 +70,19 @@ export const vehicleExpenses = pgTable("vehicle_expenses", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export type UpsertUser = typeof users.$inferInsert;
+export type InsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const loginUserSchema = createInsertSchema(users).pick({
+  email: true,
+  password: true,
+});
 
 export const insertVehicleSchema = createInsertSchema(vehicles).omit({
   id: true,
