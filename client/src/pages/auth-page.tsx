@@ -56,8 +56,7 @@ export default function AuthPage() {
     },
   });
 
-  // Debug: Log form state
-  console.log("Register form state:", registerForm.watch());
+
 
   const loginMutation = useMutation({
     mutationFn: async (data: z.infer<typeof loginSchema>) => {
@@ -238,36 +237,17 @@ export default function AuthPage() {
                         />
                       </div>
 
-                      {/* <FormField
-                        control={registerForm.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email 1</FormLabel>
-                            <FormControl>
-                              <Input 
-                                type="email"
-                                placeholder="Enter your email" 
-                                autoComplete="email"
-                                {...field} 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      /> */}
-                      
                       <FormField
                         control={registerForm.control}
                         name="email"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Email 2</FormLabel>
+                            <FormLabel>Email</FormLabel>
                             <FormControl>
                               <Input
-                                type="email" 
-                                placeholder="At least 6 characters" 
-                                autoComplete="register-email"
+                                type="email"
+                                placeholder="john@example.com" 
+                                autoComplete="email"
                                 {...field} 
                               />
                             </FormControl>
