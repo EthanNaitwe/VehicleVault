@@ -53,7 +53,7 @@ export default function AuthPage() {
       firstName: "",
       lastName: "",
       email: "",
-      email_2: "",
+      email_2: "pass",
       password: "",
     },
   });
