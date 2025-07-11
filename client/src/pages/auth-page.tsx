@@ -161,7 +161,7 @@ export default function AuthPage() {
                               <Input 
                                 type="email"
                                 placeholder="Enter your email" 
-                                autoComplete="email"
+                                autoComplete="login-email"
                                 {...field} 
                               />
                             </FormControl>
@@ -268,7 +268,7 @@ export default function AuthPage() {
                               <Input
                                 type="email" 
                                 placeholder="At least 6 characters" 
-                                autoComplete="email"
+                                autoComplete="register-email"
                                 {...field} 
                               />
                             </FormControl>
