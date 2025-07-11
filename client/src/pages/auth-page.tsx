@@ -52,6 +52,7 @@ export default function AuthPage() {
       firstName: "",
       lastName: "",
       email: "",
+      email_2: "",
       password: "",
     },
   });
@@ -240,7 +241,7 @@ export default function AuthPage() {
 
                       <FormField
                         control={registerForm.control}
-                        name="email"
+                        name="email_2"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Email</FormLabel>
@@ -248,7 +249,7 @@ export default function AuthPage() {
                               <Input 
                                 type="email"
                                 placeholder="Enter your email" 
-                                autoComplete="email"
+                                // autoComplete="email"
                                 {...field} 
                               />
                             </FormControl>
