@@ -39,8 +39,8 @@ function Router() {
           <Route path="/analytics" component={Analytics} />
         </>
       )}
-      {/* <Route component={NotFound} /> */}
-      <Route component={Landing} />
+      <Route component={NotFound} />
+      {/* <Route component={Landing} /> */}
     </Switch>
   );
 }
