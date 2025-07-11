@@ -308,6 +308,25 @@ export default function AuthPage() {
                         )}
                       />
                       
+                      <FormField
+                        control={registerForm.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="password" 
+                                placeholder="At least 6 characters" 
+                                autoComplete="new-password"
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
                       <Button 
                         type="submit" 
                         className="w-full bg-primary hover:bg-primary/90"
