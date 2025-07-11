@@ -240,12 +240,12 @@ export default function AuthPage() {
                         />
                       </div>
 
-                      {/* <FormField
+                      <FormField
                         control={registerForm.control}
                         name="email_2"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>Email 1</FormLabel>
                             <FormControl>
                               <Input 
                                 type="email"
@@ -257,14 +257,14 @@ export default function AuthPage() {
                             <FormMessage />
                           </FormItem>
                         )}
-                      /> */}
+                      />
                       
                       <FormField
                         control={registerForm.control}
                         name="email"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>Email 2</FormLabel>
                             <FormControl>
                               <Input
                                 type="email" 
