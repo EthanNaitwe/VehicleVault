@@ -34,11 +34,6 @@ export default function AuthPage() {
 
   // Redirect if already authenticated
   if (isAuthenticated) {
-    console.log("isAuthenticated: if", isAuthenticated);
-    navigate("/");
-    return null;
-  } else {
-    console.log("isAuthenticated: else", isAuthenticated);
     navigate("/");
     return null;
   }
@@ -153,7 +148,7 @@ export default function AuthPage() {
               </CardHeader>
               <CardContent>
                 {isLogin ? (
-                  <Form {...loginForm} key="login">
+                  <Form {...loginForm}>
                     <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6">
                       <FormField
                         control={loginForm.control}
@@ -203,7 +198,7 @@ export default function AuthPage() {
                     </form>
                   </Form>
                 ) : (
-                  <Form {...registerForm} key="register">
+                  <Form {...registerForm}>
                     <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-6">
                       <div className="grid grid-cols-2 gap-4">
                         <FormField
