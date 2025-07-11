@@ -38,26 +38,31 @@ Preferred communication style: Simple, everyday language.
   - `vehicleExpenses` - Vehicle-related expenses
 
 ### Authentication System
-- **Provider**: Replit Auth using OpenID Connect
-- **Strategy**: Passport.js integration for authentication flow
+- **Provider**: Custom email/password authentication
+- **Strategy**: Passport.js Local Strategy with secure password hashing
 - **Session Storage**: PostgreSQL-backed sessions using connect-pg-simple
 - **Protection**: Route-level authentication middleware
+- **Security**: Crypto-based password hashing with salt
 
 ### Frontend Pages
 - **Landing**: Marketing page for unauthenticated users
+- **Authentication**: Two-column layout with sign-in/sign-up forms and hero section
 - **Home**: Dashboard overview with key metrics
 - **Inventory**: Vehicle management with CRUD operations
 - **Analytics**: Performance metrics and reporting
 - **Dashboard**: Detailed statistics and insights
 
 ### API Endpoints
-- `/api/auth/*` - Authentication routes
+- `/api/register` - User registration
+- `/api/login` - User login
+- `/api/logout` - User logout
+- `/api/user` - Get current user data
 - `/api/vehicles/*` - Vehicle CRUD operations
 - `/api/analytics/*` - Performance metrics and statistics
 
 ## Data Flow
 
-1. **Authentication Flow**: Users authenticate via Replit Auth, sessions are stored in PostgreSQL
+1. **Authentication Flow**: Users register/login with email/password, sessions are stored in PostgreSQL
 2. **Data Fetching**: React Query handles API calls with caching and error handling
 3. **Form Submission**: React Hook Form with Zod validation, data sent to Express endpoints
 4. **Database Operations**: Drizzle ORM performs type-safe database operations
@@ -94,8 +99,16 @@ Preferred communication style: Simple, everyday language.
 
 ### Environment Variables
 - `DATABASE_URL`: PostgreSQL connection string
-- `SESSION_SECRET`: Session encryption key
-- `REPLIT_DOMAINS`: Allowed domains for Replit Auth
-- `ISSUER_URL`: OpenID Connect issuer URL
+- `SESSION_SECRET`: Session encryption key (auto-generated for development)
 
-The application follows a monorepo structure with shared TypeScript types between frontend and backend, ensuring type safety across the entire stack. The authentication system is tightly integrated with Replit's ecosystem, making it suitable for deployment on the Replit platform.
+The application follows a monorepo structure with shared TypeScript types between frontend and backend, ensuring type safety across the entire stack. The authentication system uses custom email/password authentication with secure password hashing and PostgreSQL session storage.
+
+## Recent Changes
+
+**July 11, 2025**
+- ✓ Replaced Replit Auth with custom email/password authentication
+- ✓ Implemented secure password hashing with crypto module
+- ✓ Created two-column authentication page with sign-in/sign-up forms
+- ✓ Updated database schema with proper integer types for user IDs
+- ✓ Fixed session index conflicts and PostgreSQL integration
+- ✓ Maintained seamless integration with existing vehicle management features
