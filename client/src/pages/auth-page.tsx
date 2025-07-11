@@ -36,6 +36,9 @@ export default function AuthPage() {
   if (isAuthenticated) {
     navigate("/");
     return null;
+  } else {
+    navigate("/auth");
+    return null;
   }
 
   const loginForm = useForm({
