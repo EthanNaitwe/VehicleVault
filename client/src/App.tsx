@@ -16,7 +16,7 @@ function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
   return (
-    <Switch>
+    <Switch key={isAuthenticated ? "authenticated" : "unauthenticated"}>
       {isLoading ? (
         <Route path="/">
           <div className="flex items-center justify-center min-h-screen">
